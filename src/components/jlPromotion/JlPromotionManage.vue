@@ -137,14 +137,6 @@
                         <el-radio v-model="form.radio" label="4" border size="mini">微信小程序</el-radio>
                     </el-form-item>
                 </el-col>
-                <el-col :span="24">
-                    <el-form-item label="账户ID" prop="advertiser_ids">
-                        <el-select style="width: 400px;" @change="advertiserIdChange"
-                                   v-model="form.advertiser_ids" filterable allow-create multiple
-                                   default-first-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
 
                 <el-col :span="24">
                     <el-form-item label="出价策略" prop="bid_strategy">
@@ -156,6 +148,15 @@
                                     :label="item"
                                     :value="item">
                             </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="24">
+                    <el-form-item label="账户ID" prop="advertiser_ids">
+                        <el-select style="width: 400px;" @change="advertiserIdChange"
+                                   v-model="form.advertiser_ids" filterable allow-create multiple
+                                   default-first-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
@@ -183,6 +184,7 @@
                     <el-form-item label="选择视频:" prop="jlpromotion">
                     </el-form-item>
                 </el-col>
+
                 <el-col :span="24" v-for="(index) in form.jlpromotion_number" :key="index" style="margin-left:50px ">
                     <el-form-item :label="`广告${index}`" :prop="'promotion' + index"
                                   :rules="{required: true, trigger: 'change'}">
@@ -234,7 +236,7 @@
 </template>
 
 <script>
-    // import { Loading } from 'element-ui';
+    import { Loading } from 'element-ui';
 
     export default {
         name: "JlPromotionManage",
@@ -248,6 +250,9 @@
                         return callback(new Error('账户ID错误！'));
                     }
                 }
+                if (this.form.bid_strategy.length != this.form.advertiser_ids.length) {
+                    return callback(new Error('账户ID个数与出价策略个数必须一致！'));
+                }
                 callback();
             };
             let numberCheck  = (rule, value, callback) => {
@@ -256,12 +261,12 @@
                     }
                 callback();
             };
-            let bidCheck  = (rule, value, callback) => {
-                if (this.form.bid_strategy.length != this.form.advertiser_ids.length) {
-                    return callback(new Error('账户ID个数与出价策略个数必须一致！'));
-                }
-                callback();
-            };
+            // let bidCheck  = (rule, value, callback) => {
+            //     if (this.form.bid_strategy.length != this.form.advertiser_ids.length) {
+            //         return callback(new Error('账户ID个数与出价策略个数必须一致！'));
+            //     }
+            //     callback();
+            // };
             return {
                 user : JSON.parse(sessionStorage.getItem('CurUser')),
                 question:'问题',
@@ -354,7 +359,7 @@
                     ],
                     bid_strategy: [
                         {required: true, trigger: 'blur'},
-                        {validator: bidCheck,trigger: 'change'},
+                        // {validator: bidCheck,trigger: 'change'},
                     ],
                     video_id: [
                         {required: true, trigger: 'blur'},
@@ -406,7 +411,6 @@
                 this.formVideoValue = this.formVideoValue.slice(0, row);
             },
             advertiserIdChange(row){
-                console.log(this.user)
                 if (row && row[0] && row[0].length==16) {
                     this.$axios.post(this.$httpUrl+'/jlaccount/getVideoList',{advertiser_id: row[0], jlaccount : this.user.jlaccount}).then(res=>res.data).then(res=>{
                         if(res.code==200){
@@ -417,7 +421,19 @@
                                 type: 'error'
                             });
                         }
-
+                    })
+                    this.$axios.post(this.$httpUrl+'/jlaccount/getAdvertiserInfo',{advertiser_id: row[row.length-1], jlaccount : this.user.jlaccount}).then(res=>res.data).then(res=>{
+                        if(res.code==200){
+                            this.$message({
+                                message: '账户' + row[row.length-1]+ "的名字为：" + res.data.name + "，请检查账户与出价策略是否匹配。",
+                                type: 'info'
+                            });
+                        }else{
+                            this.$message({
+                                message: '操作失败！',
+                                type: 'error'
+                            });
+                        }
                     })
                 }
             },
@@ -473,7 +489,7 @@
                 this.centerDialogVisible = true
             },
             doSave(){
-                // let loadingInstance = Loading.service({ fullscreen: true, text: '创建广告中，请稍等！',  });
+                let loadingInstance = Loading.service({ fullscreen: true, text: '创建广告中，请稍等！',  });
                 this.form.time=this.currentDate();
                 this.form.creater = this.user.name;
                 this.form.distributorId_w = this.user.distributor_w;
@@ -497,9 +513,9 @@
                                     type: 'error'
                                 });
                             }
-                            // this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-                            //     loadingInstance.close();
-                            // });
+                            this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+                                loadingInstance.close();
+                            });
                         })
                 //     }else{
                 //         this.$message({
