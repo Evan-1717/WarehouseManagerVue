@@ -23,12 +23,12 @@
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost1">查询</el-button>
 
-                    <el-button type="primary" style="float: right" @click="add" >创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'" >创建广告</el-button>
                 </div>
                 <el-table :data="autoPromotionTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
-                    <el-table-column prop="promotion_id" label="账户ID" width="150" fixed="left"></el-table-column>
-                    <el-table-column prop="promotion_name" label="账户名称" width="400" fixed="left"></el-table-column>
-                    <el-table-column prop="media_source" label="小程序" width="100" fixed="left"></el-table-column>
+                    <el-table-column prop="promotion_id" label="账户ID" width="150" ></el-table-column>
+                    <el-table-column prop="promotion_name" label="账户名称" width="400" ></el-table-column>
+                    <el-table-column prop="media_source" label="小程序" width="100" ></el-table-column>
                     <el-table-column prop="create_time" label="创建时间" width="200" :sortable="true"></el-table-column>
                     <el-table-column prop="creater" label="创建人" width="150" :sortable="true"></el-table-column>
                 </el-table>
@@ -60,13 +60,13 @@
                     </el-form>
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost2">查询</el-button>
-                    <el-button type="primary" style="float: right" @click="add" >创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'">创建广告</el-button>
                 </div>
                 <el-table :data="jlprojectTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
-                    <el-table-column prop="project_id" label="项目ID" width="200" fixed="left"></el-table-column>
-                    <el-table-column prop="name" label="项目名称" width="300" fixed="left"></el-table-column>
-                    <el-table-column prop="advertiser_id" label="账户ID" width="150" fixed="left"></el-table-column>
-                    <el-table-column prop="bid_strategy" label="出价策略" width="200" fixed="left"></el-table-column>
+                    <el-table-column prop="project_id" label="项目ID" width="200" ></el-table-column>
+                    <el-table-column prop="name" label="项目名称" width="300" ></el-table-column>
+                    <el-table-column prop="advertiser_id" label="账户ID" width="150" ></el-table-column>
+                    <el-table-column prop="bid_strategy" label="出价策略" width="200" ></el-table-column>
                     <el-table-column prop="time" label="创建时间" width="200" :sortable="true"></el-table-column>
                     <el-table-column prop="creater" label="创建人" width="150" :sortable="true"></el-table-column>
                 </el-table>
@@ -101,13 +101,13 @@
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost3">查询</el-button>
 
-                    <el-button type="primary" style="float: right" @click="add" >创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'">创建广告</el-button>
                 </div>
                 <el-table :data="jlpromotionTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
                     <el-table-column prop="promotion_id" label="广告ID" width="200"></el-table-column>
-                    <el-table-column prop="name" label="广告名" width="300" fixed="left"></el-table-column>
-                    <el-table-column prop="advertiser_id" label="账户ID" width="150" fixed="left"></el-table-column>
-                    <el-table-column prop="project_id" label="项目ID" width="200" fixed="left"></el-table-column>
+                    <el-table-column prop="name" label="广告名" width="300" ></el-table-column>
+                    <el-table-column prop="advertiser_id" label="账户ID" width="150"></el-table-column>
+                    <el-table-column prop="project_id" label="项目ID" width="200" ></el-table-column>
                     <el-table-column prop="external_url_material_list" label="落地页链接素材" width="300" :show-overflow-tooltip="true"></el-table-column>
                     <el-table-column prop="time" label="创建时间" width="200" :sortable="true"></el-table-column>
                     <el-table-column prop="creater" label="创建人" width="150" :sortable="true" ></el-table-column>
@@ -127,20 +127,28 @@
         <el-dialog
                 title="提示"
                 :visible.sync="centerDialogVisible"
-                width="650px"
+                width="650px" :close-on-click-modal="false"
                 center>
 
             <el-form ref="form" :rules="rules" :model="form" label-width="140px">
                 <el-col :span="24">
                     <el-form-item label="投放载体" prop="radio">
                         <el-radio v-model="form.radio" label="1" border size="mini">抖音小程序</el-radio>
-                        <el-radio v-model="form.radio" label="4" border size="mini">微信小程序</el-radio>
+                        <el-radio v-model="form.radio" label="4" border size="mini" v-show="user.roleId!=2">微信小程序</el-radio>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="24">
+                    <el-form-item label="视频账户ID" prop="videoAdvertiser_id">
+                        <el-input style="width: 400px;" @change="videoListClear"
+                                   v-model="form.videoAdvertiser_id" >
+                        </el-input>
                     </el-form-item>
                 </el-col>
 
                 <el-col :span="24">
                     <el-form-item label="出价策略" prop="bid_strategy">
-                        <el-select style="width: 400px;"
+                        <el-select style="width: 400px;" @change="videoListClear"
                                    v-model="form.bid_strategy"  multiple>
                             <el-option
                                     v-for="item in bid_strategys"
@@ -152,12 +160,11 @@
                     </el-form-item>
                 </el-col>
 
-                <el-col :span="24">
-                    <el-form-item label="账户ID" prop="advertiser_ids">
-                        <el-select style="width: 400px;" @change="advertiserIdChange"
-                                   v-model="form.advertiser_ids" filterable allow-create multiple
-                                   default-first-option>
-                        </el-select>
+                <el-col :span="24" v-for="(index) in form.bid_strategy.length" :key="index" style="margin-left:50px ">
+                    <el-form-item :label="form.bid_strategy[index-1]" :prop="'advertiser_id' + index"
+                                  :rules="{required: true, trigger: 'change'}">
+                        <el-input style="width: 350px;" v-model="form['advertiser_id' + index]"  @change="(value)=>advertiserIdChange(value, form.bid_strategy[index-1], index)">
+                        </el-input>
                     </el-form-item>
                 </el-col>
 
@@ -169,57 +176,79 @@
 
                 <el-col :span="24">
                     <el-form-item label="创建项目个数" prop="project_number">
-                        <el-input-number v-model="form.project_number" :step="1" :min="0" style="width: 400px;"></el-input-number>
+                        <el-input-number v-model="form.project_number" step="1" min=1 max="10" style="width: 400px;"></el-input-number>
                     </el-form-item>
                 </el-col>
 
                 <el-col :span="24">
                     <el-form-item label="创建广告个数" prop="jlpromotion_number">
-                        <el-input-number v-model="form.jlpromotion_number" :step="1" :min="0" style="width: 400px;"
+                        <el-input-number v-model="form.jlpromotion_number" step="1" min=1 max="40" style="width: 400px;"
                                          @change="jlpromotionNumberChange"></el-input-number>
                     </el-form-item>
                 </el-col>
 
-                <el-col :span="24" v-show="form.jlpromotion_number != 0">
-                    <el-form-item label="选择视频:" prop="jlpromotion">
-                    </el-form-item>
-                </el-col>
+<!--                <el-col :span="24" v-show="form.jlpromotion_number != 0">-->
+<!--                    <el-form-item label="选择视频:" prop="jlpromotion">-->
+<!--                    </el-form-item>-->
+<!--                </el-col>-->
 
-                <el-col :span="24" v-for="(index) in form.jlpromotion_number" :key="index" style="margin-left:50px ">
-                    <el-form-item :label="`广告${index}`" :prop="'promotion' + index"
-                                  :rules="{required: true, trigger: 'change'}">
-                        <el-select style="width: 350px;" v-model="form['promotion' + index]"
-                                   multiple filterable>
+<!--                <el-col :span="24" v-for="(index) in form.jlpromotion_number" :key="index" style="margin-left:50px ">-->
+<!--                    <el-form-item :label="`广告${index}`" :prop="'promotion' + index"-->
+<!--                                  :rules="{required: true, trigger: 'change'}">-->
+<!--                        <el-select style="width: 350px;" v-model="form['promotion' + index]"-->
+<!--                                   multiple filterable>-->
+<!--                            <el-option-->
+<!--                                    v-for="item in videoList"-->
+<!--                                    :key="item.id"-->
+<!--                                    :label="item.filename"-->
+<!--                                    :value="item.id">-->
+<!--                            </el-option>-->
+<!--                        </el-select>-->
+<!--                    </el-form-item>-->
+<!--                </el-col>-->
+
+                <el-col :span="24"  >
+                    <el-form-item label="选择视频" prop="video_ids" >
+                        <el-select style="width: 400px;" v-model="form.video_ids" @focus="videoFocus" :loading = "videoListLoading"
+                                   multiple filterable ref="videoSelect">
+                            <el-option :label="allValue" :value="allValue" @click.native="selsectAll"></el-option>
                             <el-option
                                     v-for="item in videoList"
                                     :key="item.id"
                                     :label="item.filename"
                                     :value="item.id">
                             </el-option>
+
                         </el-select>
                     </el-form-item>
                 </el-col>
 
                 <el-col :span="24">
-                    <el-form-item label="微信落地页链接" v-if="form.radio=='4'" prop="external_url_material_list">
-                        <el-select style="width: 400px;"
-                                v-model="form.external_url_material_list" multiple filterable allow-create
-                                default-first-option>
-                            <el-option
-                                    v-for="item in external_url_material_list"
-                                    :key="item.url"
-                                    :label="item.lable"
-                                    :value="item.url">
-                            </el-option>
-                        </el-select>
+                    <el-form-item label="使用统一封面" prop="radio">
+                        <el-radio v-model="form.cover" label="y" border size="mini">是</el-radio>
+                        <el-radio v-model="form.cover" label="n" border size="mini">否</el-radio>
                     </el-form-item>
                 </el-col>
 
                 <el-col :span="24">
-                    <el-form-item label="抖音小程序资产id" v-if="form.radio=='1'" prop="byte_micro_app_instance_id">
-                        <el-input v-model="form.byte_micro_app_instance_id" style="width: 400px;" ></el-input>
+                    <el-form-item label="起始收费剧集" prop="start_chapter">
+                        <el-input-number v-model="form.start_chapter" step="1" min=5 max=30 style="width: 400px;"></el-input-number>
                     </el-form-item>
                 </el-col>
+
+                <el-col :span="24">
+                    <el-form-item label="落地页链接" prop="external_url_material_list">
+                        <el-input style="width: 400px;"
+                                v-model="form.external_url_material_list" >
+                        </el-input>
+                    </el-form-item>
+                </el-col>
+
+<!--                <el-col :span="24">-->
+<!--                    <el-form-item label="抖音小程序资产id" v-if="form.radio=='1'" prop="byte_micro_app_instance_id">-->
+<!--                        <el-input v-model="form.byte_micro_app_instance_id" style="width: 400px;" ></el-input>-->
+<!--                    </el-form-item>-->
+<!--                </el-col>-->
 
                 <el-col :span="24">
                     <el-form-item label="微信小程序资产id" v-if="form.radio=='4'" prop="wechat_micro_app_instance_id">
@@ -242,6 +271,12 @@
         name: "JlPromotionManage",
         data() {
             let checkAdvertiserId = (rule, value, callback) => {
+                if (value.length!=16) {
+                    return callback(new Error('账户ID错误！'));
+                }
+                callback();
+            };
+            let checkAdvertiserIds = (rule, value, callback) => {
                 if (value.length > 10) {
                     return callback(new Error('账户ID信息个数不能超过10个！'));
                 }
@@ -256,9 +291,9 @@
                 callback();
             };
             let numberCheck  = (rule, value, callback) => {
-                    if (value <= 0) {
-                        return callback(new Error('个数必须大于1！'));
-                    }
+                if (value <= 0) {
+                    return callback(new Error('个数必须大于1！'));
+                }
                 callback();
             };
             // let bidCheck  = (rule, value, callback) => {
@@ -282,10 +317,6 @@
                 fileList: {},
                 uploadUrl : this.$httpUrl+'/jlaccount/upload',
                 videoList: [],
-                titleOptions:['titletitletitle','title1title1title1'],
-                call_to_action_buttons: [],
-                external_url_material_list: [],
-                product_info_selling_points: [],
                 autoPromotionTableData: [],
                 jlprojectTableData: [],
                 jlpromotionTableData: [],
@@ -306,13 +337,18 @@
 
                 form:{
                     radio:'1',
+                    cover:'n',
                     id:'',
+                    videoAdvertiser_id:'',
                     advertiser_ids:[],
                     bid_strategy:[],
                     video_id:'',
-                    jlpromotion_number:0,
-                    project_number:0,
-                    external_url_material_list:[],
+                    video_ids:[],
+                    video_list:[],
+                    start_chapter:10,
+                    jlpromotion_number:1,
+                    project_number:1,
+                    external_url_material_list:'',
                     wechat_micro_app_instance_id:'',
                     byte_micro_app_instance_id:'',
                     time : '',
@@ -329,15 +365,35 @@
                     promotion7:[],
                     promotion8:[],
                     promotion9:[],
-                    promotion10:[]
+                    promotion10:[],
+                    advertiser_id1:'',
+                    advertiser_id2:'',
+                    advertiser_id3:'',
+                    advertiser_id4:'',
+                    advertiser_id5:'',
+                    bid_strategy1:'',
+                    bid_strategy2:'',
+                    bid_strategy3:'',
+                    bid_strategy4:'',
+                    bid_strategy5:'',
                 },
+                flag : true,
+                videoListLoading: false,
+                allValue:'all',
                 bid_strategys:[
-                    '3块9解锁',
-                    '5块9解锁',
-                    '9块9解锁',
-                    '39块解锁',
-                    '188块解锁'
+                    '抖超小29',
+                    // '5块9解锁',
+                    '抖超小10',
+                    '抖小额',
+                    '抖大额'
                 ],
+                bid_strategys_name_info: {
+                    '抖超小29': "抖超小29",
+                    '5块9解锁': "抖超小59",
+                    '抖超小10': "抖超小10",
+                    '抖小额': "抖小额",
+                    '抖大额': "抖大额",
+                },
                 formVideoValue: [],
                 tomatoForm: {
 
@@ -353,9 +409,13 @@
                     role:[]
                 },
                 rules: {
+                    videoAdvertiser_id: [
+                        {required: true, trigger: 'blur'},
+                        {validator: checkAdvertiserId,trigger: 'blur'},
+                    ],
                     advertiser_ids: [
                         {required: true, trigger: 'blur'},
-                        {validator: checkAdvertiserId,trigger: 'change'},
+                        {validator: checkAdvertiserIds,trigger: 'change'},
                     ],
                     bid_strategy: [
                         {required: true, trigger: 'blur'},
@@ -380,7 +440,14 @@
                     ],
                     wechat_micro_app_instance_id: [
                         {required: true, trigger: 'blur'},
+                    ],
+                    start_chapter: [
+                        {required: true, trigger: 'blur'},
+                    ],
+                    video_ids: [
+                        {required: true, trigger: 'blur'},
                     ]
+
                 },
 
                 users:[],
@@ -389,45 +456,93 @@
             }
         },
         methods:{
-            showUpload() {
-                this.uploadDialogVisible = true;
-                this.fileList = [];
+            videoFocus() {
+                if (this.validateVideoAdvertiser_id()) {return}
+                for (const ind in this.form.bid_strategy) {
+                    const res = this.validateAdvertiser_id1('advertiser_id' + (Number(ind)+1), this.form.bid_strategy[ind]);
+                    if (res) {return}
+                }
+                this.videoAdvertiserIdChange();
+            },
+            validateVideoAdvertiser_id() {
+                this.$refs.form.validateField("videoAdvertiser_id", (valid) => {
+                    if (valid) {
+                        this.$refs.videoSelect.blur();
+                        this.$message({
+                            message: '请先输入视频账户ID！',
+                            type: 'info'
+                        });
+                        this.flag = true;
+                    } else {
+                        this.flag = false;
+                    }
+                });
+                return this.flag;
+            },
+            validateAdvertiser_id1(value1, value2) {
+                this.$refs.form.validateField(value1, (valid) => {
+                    if (valid) {
+                        this.$refs.videoSelect.blur();
+                        this.$message({
+                            message: '请先输入'+value2+'！',
+                            type: 'info'
+                        });
+                        this.flag = true;
+                    } else {
+                        this.flag = false;
+                    }
+                });
+                return this.flag;
+            },
+            selsectAll() {
+                this.form.video_ids = this.form.video_list.map(item => item.id)
             },
             handleClick(tab, event) {
                 console.log(tab, event);
             },
-            submitUpload() {
-                this.$refs.upload.submit();
-            },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
-            },
-            handlePreview(file) {
-                console.log(file);
-            },
             jlpromotionNumberChange(row){
+
                 let newVal = {ids:[], ind:row}
                 this.formVideoValue.push(newVal);
                 this.formVideoValue = this.formVideoValue.slice(0, row);
             },
-            advertiserIdChange(row){
-                if (row && row[0] && row[0].length==16) {
-                    this.$axios.post(this.$httpUrl+'/jlaccount/getVideoList',{advertiser_id: row[0], jlaccount : this.user.jlaccount}).then(res=>res.data).then(res=>{
+            videoAdvertiserIdChange() {
+                this.videoListLoading = true;
+                this.dealAdvertiser_ids();
+                this.form.time=this.currentDate();
+                this.form.creater = this.user.name;
+                this.form.jlaccount = this.user.jlaccount;
+                this.$axios.post(this.$httpUrl + '/jlaccount/bindVideo', this.form).then(res => res.data).then(res => {
+                    if (res.code == 200) {
+                        this.allValue = 'all    总计' + res.data.videoSizeMax + '，完成' + res.data.videoSizeMin;
+                        this.videoList = res.data.data;
+                        this.form.video_list = res.data.data;
+                        this.videoListLoading = false;
+
+                    } else {
+                        this.$message({
+                            message: '操作失败！',
+                            type: 'error'
+                        });
+                    }
+                })
+
+            },
+            videoListClear() {
+                this.form.video_ids = [];
+            },
+            advertiserIdChange(row,title, index){
+                this.form.video_ids = [];
+                if (row && row.length==16) {
+                    this.$axios.post(this.$httpUrl+'/jlaccount/getAdvertiserInfo',{advertiser_id: row, jlaccount : this.user.jlaccount}).then(res=>res.data).then(res=>{
                         if(res.code==200){
-                            this.videoList = res.data;
-                        }else{
-                            this.$message({
-                                message: '操作失败！',
-                                type: 'error'
-                            });
-                        }
-                    })
-                    this.$axios.post(this.$httpUrl+'/jlaccount/getAdvertiserInfo',{advertiser_id: row[row.length-1], jlaccount : this.user.jlaccount}).then(res=>res.data).then(res=>{
-                        if(res.code==200){
-                            this.$message({
-                                message: '账户' + row[row.length-1]+ "的名字为：" + res.data.name + "，请检查账户与出价策略是否匹配。",
-                                type: 'info'
-                            });
+                            if (res.data.name.indexOf(title) < 0) {
+                                this.$message({
+                                    message: '账户' + row + "的名字为：" + res.data.name + "，请检查账户与出价策略是否匹配。",
+                                    type: 'info'
+                                });
+                                this.form['advertiser_id' + (Number(index))] = '';
+                            }
                         }else{
                             this.$message({
                                 message: '操作失败！',
@@ -437,8 +552,12 @@
                     })
                 }
             },
-
-
+            dealAdvertiser_ids () {
+                this.form.advertiser_ids = [];
+                for (const ind in this.form.bid_strategy) {
+                    this.form.advertiser_ids.push(this.form['advertiser_id' + (Number(ind)+1)]);
+                }
+            },
             getInputInfo() {
                 this.$axios.get(this.$httpUrl+'/user/inputInfo').then(res=>res.data).then(res=>{
                     if(res.code==200){
@@ -453,9 +572,6 @@
 
                 })
             },
-            aiAnswerClose() {
-
-            },
 
             fixed (val) {
                 return Number(val).toFixed(4);
@@ -467,23 +583,7 @@
             resetForm() {
                 this.$refs.form.resetFields();
                 this.form.id = '';
-            },
-            mod(row){
-                this.centerDialogVisible = true
-                this.$nextTick(()=>{
-                    //赋值到表单
-                    this.form.id = row.id;
-                    this.form.date = row.date;
-                    this.form.dianzhongexpend = row.dianzhongexpend;
-                    this.form.dianzhongrecharge = row.dianzhongrecharge;
-                    this.form.heiyanexpend = row.heiyanexpend;
-                    this.form.heiyanrecharge = row.heiyanrecharge;
-                    this.form.fanqieexpend = row.fanqieexpend;
-                    this.form.fanqierecharge = row.fanqierecharge;
-                    this.form.qimaoexpend = row.qimaoexpend;
-                    this.form.qimaorecharge = row.qimaorecharge;
-                })
-                this.modRow = row;
+                this.form.cover = 'n';
             },
             add(){
                 this.centerDialogVisible = true
@@ -495,122 +595,31 @@
                 this.form.distributorId_w = this.user.distributor_w;
                 this.form.distributorId_b = this.user.distributor_b;
                 this.form.jlaccount = this.user.jlaccount;
-                // this.$axios.post(this.$httpUrl+'/jlaccount/checkrecord',this.form).then(res=>res.data).then(res=>{
-                //     if(res.data.length==0){
-                        this.$axios.post(this.$httpUrl+'/jlaccount/autoCreatePromotion',this.form).then(res=>res.data).then(res=>{
-                            if(res.data.message=='OK'){
-                                this.$message({
-                                    message: '操作成功！',
-                                    type: 'success'
-                                });
-                                this.centerDialogVisible = false
-                                this.loadPost1()
-                                this.activeName= 'automation_promotion',
-                                this. resetForm();
-                            }else{
-                                this.$message({
-                                    message: '创建失败！',
-                                    type: 'error'
-                                });
-                            }
-                            this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-                                loadingInstance.close();
-                            });
-                        })
-                //     }else{
-                //         this.$message({
-                //             message: this.form.date + '已录入数据！',
-                //             type: 'error'
-                //         });
-                //     }
-                // })
-            },
-            exportExcel(){
-                this.form.time=this.currentDate();
-                this.form.creater = this.user.name;
-                this.$confirm('确定导出？','提示',{
-                    confirmButtonText:'确定',
-                    cancelButtonText:'取消',
-                    type:'warning'
-                }).then(() => {
-                    this.$axios.request({
-                        url:this.$httpUrl+'/novel/export',
-                        method:'post',
-                        data: {
-                            date1:this.form1.date1,
-                            date2:this.form1.date2,
-                            location:this.form1.location,
-                            content:this.form1.content,
-                            hiredate1:this.form1.hiredate1,
-                            hiredate2:this.form1.hiredate2,
-                            creater:this.form1.creater,
-                            role: this.form1.role
-                        },
-                        responseType:'blob'
-                    }).then(res=>{
-                        const url = window.URL.createObjectURL(new Blob([res.data]));
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.setAttribute('download','投放记录' + new Date().getTime() + '.xlsx');
-                        document.body.appendChild(link);
-                        link.click();
-                        window.URL.revokeObjectURL(URL);
-                    }).catch(() => {
+                this.dealAdvertiser_ids();
+                this.$axios.post(this.$httpUrl+'/jlaccount/autoCreatePromotion',this.form).then(res=>res.data).then(res=>{
+                    if(res.data.message=='success'){
                         this.$message({
-                            message: '下载失败！',
-                            type: 'error'
+                            message: '操作成功！',
+                            type: 'success'
                         });
-                    })
-                })
-            },
-            ask() {
-                this.question = '问题: ' + this.formAiAsk.ask;
-                const data = {
-                    date1: this.form1.date1,
-                    date2:this.form1.date2,
-                    location:this.form1.location,
-                    content:this.form1.content,
-                    hiredate1:this.form1.hiredate1,
-                    hiredate2:this.form1.hiredate2,
-                    creater:this.form1.creater,
-                    asker: this.user.name,
-                    ask: this.formAiAsk.ask,
-                    tableName: 'novel',
-                    role:this.form1.role
-                }
-                const loading = this.$loading({
-                    lock: true,
-                    text: 'AI正在思考，清稍等！',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                });
-                this.$axios.post(this.$httpUrl+'/deepseek/ask', data).then(res=>res.data).then(res=>{
-                    if(res.code==200){
-                        this.aiAskDialogVisible = false;
-                        this.aiAnswerDialogVisible = true;
-                        this.aiAnswer = res.data;
-                        loading.close();
+                        this.centerDialogVisible = false
+                        this.loadPost1()
+                        this.loadPost2()
+                        this.loadPost3()
+                        this.activeName= 'automation_promotion',
+                        this.resetForm();
                     }else{
                         this.$message({
-                            message: '操作失败！',
+                            message: '创建失败！',
                             type: 'error'
                         });
                     }
+                    this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+                        loadingInstance.close();
+                    });
                 })
             },
-            aiAnalyze(time) {
-                this.formAiAsk.ask= '';
-                this.aiAnswerDialogVisible = false
-                this.aiAnswer = '';
-                this.aiAskDialogVisible = true;
 
-                if (time == 'first') {
-                    this.$axios.post(this.$httpUrl+'/deepseek/clearAsk', {
-                        asker: this.user.name,
-                        tableName: 'novel'
-                    })
-                }
-            },
             currentDate(){
                 var d = new Date();
                 var year = d.getFullYear();
