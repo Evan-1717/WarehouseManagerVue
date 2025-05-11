@@ -610,7 +610,7 @@
                         this.resetForm();
                     }else{
                         this.$message({
-                            message: '创建失败！',
+                            message: '创建失败！' + res.data.message,
                             type: 'error'
                         });
                     }
