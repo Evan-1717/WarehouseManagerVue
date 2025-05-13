@@ -8,8 +8,8 @@ import VueRouter from 'vue-router';
 import router from './router';
 import store from './store';
 Vue.prototype.$axios=axios;
-// Vue.prototype.$httpUrl='http://106.14.81.169:8002/api'  //将地址设置为全局
-Vue.prototype.$httpUrl='http://localhost:8002/api'
+Vue.prototype.$httpUrl='http://106.14.81.169:8002/api'  //将地址设置为全局
+// Vue.prototype.$httpUrl='http://localhost:8002/api'
 Vue.config.productionTip = false
 //Vue.use(ElementUI);
 Vue.use(VueRouter);
