@@ -148,7 +148,7 @@
 
                 <el-col :span="24">
                     <el-form-item label="出价策略" prop="bid_strategy">
-                        <el-select style="width: 400px;" @change="videoListClear"
+                        <el-select style="width: 400px;" @change="strategyChange"
                                    v-model="form.bid_strategy"  multiple>
                             <el-option
                                     v-for="item in bid_strategys"
@@ -527,6 +527,14 @@
                     }
                 })
 
+            },
+            strategyChange() {
+                this.form.video_ids = [];
+                this.form.advertiser_id1 = '';
+                this.form.advertiser_id2 = '';
+                this.form.advertiser_id3 = '';
+                this.form.advertiser_id4 = '';
+                this.form.advertiser_id5 = '';
             },
             videoListClear() {
                 this.form.video_ids = [];
