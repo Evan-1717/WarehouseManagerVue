@@ -140,14 +140,6 @@
                 </el-col>
 
                 <el-col :span="24">
-                    <el-form-item label="视频账户ID" prop="videoAdvertiser_id">
-                        <el-input style="width: 400px;" @change="videoListClear"
-                                   v-model="form.videoAdvertiser_id" >
-                        </el-input>
-                    </el-form-item>
-                </el-col>
-
-                <el-col :span="24">
                     <el-form-item label="出价策略" prop="bid_strategy">
                         <el-select style="width: 400px;" @change="strategyChange"
                                    v-model="form.bid_strategy"  multiple>
@@ -161,13 +153,41 @@
                     </el-form-item>
                 </el-col>
 
-                <el-col :span="24" v-for="(index) in form.bid_strategy.length" :key="index" style="margin-left:50px ">
-                    <el-form-item :label="form.bid_strategy[index-1]" :prop="'advertiser_id' + index"
-                                  :rules="{required: true, trigger: 'change'}">
-                        <el-input style="width: 350px;" v-model="form['advertiser_id' + index]"  @change="(value)=>advertiserIdChange(value, form.bid_strategy[index-1], index)">
-                        </el-input>
+                <el-col :span="24">
+                    <el-form-item label="投放主体" prop="subject">
+                        <el-select style="width: 400px;"
+                                   v-model="form.subject"  multiple>
+                            <el-option
+                                    v-for="item in subjects"
+                                    :key="item"
+                                    :label="item"
+                                    :value="item">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
+
+                <span v-for="(inde) in form.subject.length" :key="inde">
+
+                    <el-col :span="24" style="margin-left:50px ">
+                        <span>{{form.subject[inde-1]}}</span>
+                    <el-form-item label="视频账户ID" :prop="'subject' + inde" :rules="{required: true, trigger: 'change'}">
+                        <el-input style="width: 350px;"
+                                  v-model="form['subject' + inde][videoAdvertiser_id]" >
+                        </el-input>
+                    </el-form-item>
+                    </el-col>
+
+                    <el-col :span="24" v-for="(index) in form.bid_strategy.length" :key="index" style="margin-left:50px ">
+                        <el-form-item :label="form.bid_strategy[index-1]" :prop="'advertiser_id' + inde + index"
+                                      :rules="{required: true, trigger: 'change'}">
+                            <el-input style="width: 350px;" v-model="form['subject' + inde]['advertiser_id' + index]"  @change="(value)=>advertiserIdChange(value, form.bid_strategy[index-1], index)">
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+
+                </span>
+
 
                 <el-col :span="24">
                     <el-form-item label="番茄短剧ID" prop="video_id">
@@ -245,12 +265,7 @@
     export default {
         name: "JlPromotionManage",
         data() {
-            let checkAdvertiserId = (rule, value, callback) => {
-                if (value.length!=16) {
-                    return callback(new Error('账户ID错误！'));
-                }
-                callback();
-            };
+
             let checkAdvertiserIds = (rule, value, callback) => {
                 if (value.length > 10) {
                     return callback(new Error('账户ID信息个数不能超过10个！'));
@@ -314,6 +329,7 @@
                     radio:'1',
                     cover:'n',
                     id:'',
+                    subject:'',
                     videoAdvertiser_id:'',
                     advertiser_ids:[],
                     bid_strategy:[],
@@ -352,13 +368,24 @@
                     bid_strategy3:'',
                     bid_strategy4:'',
                     bid_strategy5:'',
+                    subject1:{},
+                    subject2:{},
+                    subject3:{},
+                    subject4:{},
+                    subject5:{},
+
                 },
+                subjects:[
+                    'jtduanju9075@163.com',
+                    'jtduanju9071@163.com',
+                    'jtduanju9072@163.com',
+                    'jtduanju9073@163.com'
+                ],
                 flag : true,
                 videoListLoading: false,
                 allValue:'all',
                 bid_strategys:[
                     '抖超小29',
-                    // '5块9解锁',
                     '抖超小10',
                     '抖小额',
                     '抖大额'
@@ -385,10 +412,6 @@
                     role:[]
                 },
                 rules: {
-                    videoAdvertiser_id: [
-                        {required: true, trigger: 'blur'},
-                        {validator: checkAdvertiserId,trigger: 'blur'},
-                    ],
                     advertiser_ids: [
                         {required: true, trigger: 'blur'},
                         {validator: checkAdvertiserIds,trigger: 'change'},
