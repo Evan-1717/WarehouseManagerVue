@@ -23,7 +23,7 @@
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost1">查询</el-button>
 
-                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'">创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'|| user.no=='liangshenggang'|| user.no=='daiziling'|| user.no=='tangrui'|| user.no=='sujinpeng'|| user.no=='fanyuanbing'|| user.no=='zhengzhiyuan'|| user.no=='liangchaoqun'">创建广告</el-button>
                 </div>
                 <el-table :data="autoPromotionTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
                     <el-table-column prop="promotion_id" label="账户ID" width="150" ></el-table-column>
@@ -60,7 +60,7 @@
                     </el-form>
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost2">查询</el-button>
-                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'">创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'|| user.no=='liangshenggang'|| user.no=='daiziling'|| user.no=='tangrui'|| user.no=='sujinpeng'|| user.no=='fanyuanbing'|| user.no=='zhengzhiyuan'|| user.no=='liangchaoqun'">创建广告</el-button>
                 </div>
                 <el-table :data="jlprojectTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
                     <el-table-column prop="project_id" label="项目ID" width="200" ></el-table-column>
@@ -101,7 +101,7 @@
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost3">查询</el-button>
 
-                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'">创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'|| user.no=='liangshenggang'|| user.no=='daiziling'|| user.no=='tangrui'|| user.no=='sujinpeng'|| user.no=='fanyuanbing'|| user.no=='zhengzhiyuan'|| user.no=='liangchaoqun'">创建广告</el-button>
                 </div>
                 <el-table :data="jlpromotionTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
                     <el-table-column prop="promotion_id" label="广告ID" width="200"></el-table-column>
@@ -431,7 +431,6 @@
         },
         methods:{
             videoFocus() {
-                console.log(this.user)
                 for (const index in this.form.subject) {
                     if (this.validateVideoAdvertiser_id((Number(index)+1))) {return}
                     for (const ind in this.form.bid_strategy) {
