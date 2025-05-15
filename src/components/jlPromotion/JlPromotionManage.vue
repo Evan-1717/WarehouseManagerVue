@@ -23,7 +23,7 @@
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost1">查询</el-button>
 
-                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'" >创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'">创建广告</el-button>
                 </div>
                 <el-table :data="autoPromotionTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
                     <el-table-column prop="promotion_id" label="账户ID" width="150" ></el-table-column>
@@ -60,7 +60,7 @@
                     </el-form>
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost2">查询</el-button>
-                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'">创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'">创建广告</el-button>
                 </div>
                 <el-table :data="jlprojectTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
                     <el-table-column prop="project_id" label="项目ID" width="200" ></el-table-column>
@@ -101,7 +101,7 @@
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost3">查询</el-button>
 
-                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'">创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'">创建广告</el-button>
                 </div>
                 <el-table :data="jlpromotionTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
                     <el-table-column prop="promotion_id" label="广告ID" width="200"></el-table-column>
@@ -133,8 +133,9 @@
             <el-form ref="form" :rules="rules" :model="form" label-width="140px">
                 <el-col :span="24">
                     <el-form-item label="投放载体" prop="radio">
-                        <el-radio v-model="form.radio" label="1" border size="mini">抖音小程序</el-radio>
-                        <el-radio v-model="form.radio" label="4" border size="mini" v-show="user.roleId!=2">微信小程序</el-radio>
+                        <el-radio v-model="form.radio" label="1" @change="(value)=>radioChange(value)" border size="mini">抖音小程序</el-radio>
+<!--                        <el-radio v-model="form.radio" label="4" @change="(value)=>radioChange(value)" border size="mini">微信小程序</el-radio>-->
+                        <el-radio v-model="form.radio" label="7" @change="(value)=>radioChange(value)" border size="mini">抖音小程序免费</el-radio>
                     </el-form-item>
                 </el-col>
 
@@ -187,26 +188,6 @@
                     </el-form-item>
                 </el-col>
 
-<!--                <el-col :span="24" v-show="form.jlpromotion_number != 0">-->
-<!--                    <el-form-item label="选择视频:" prop="jlpromotion">-->
-<!--                    </el-form-item>-->
-<!--                </el-col>-->
-
-<!--                <el-col :span="24" v-for="(index) in form.jlpromotion_number" :key="index" style="margin-left:50px ">-->
-<!--                    <el-form-item :label="`广告${index}`" :prop="'promotion' + index"-->
-<!--                                  :rules="{required: true, trigger: 'change'}">-->
-<!--                        <el-select style="width: 350px;" v-model="form['promotion' + index]"-->
-<!--                                   multiple filterable>-->
-<!--                            <el-option-->
-<!--                                    v-for="item in videoList"-->
-<!--                                    :key="item.id"-->
-<!--                                    :label="item.filename"-->
-<!--                                    :value="item.id">-->
-<!--                            </el-option>-->
-<!--                        </el-select>-->
-<!--                    </el-form-item>-->
-<!--                </el-col>-->
-
                 <el-col :span="24"  >
                     <el-form-item label="选择视频" prop="video_ids" >
                         <el-select style="width: 400px;" v-model="form.video_ids" @focus="videoFocus" :loading = "videoListLoading"
@@ -243,12 +224,6 @@
                         </el-input>
                     </el-form-item>
                 </el-col>
-
-<!--                <el-col :span="24">-->
-<!--                    <el-form-item label="抖音小程序资产id" v-if="form.radio=='1'" prop="byte_micro_app_instance_id">-->
-<!--                        <el-input v-model="form.byte_micro_app_instance_id" style="width: 400px;" ></el-input>-->
-<!--                    </el-form-item>-->
-<!--                </el-col>-->
 
                 <el-col :span="24">
                     <el-form-item label="微信小程序资产id" v-if="form.radio=='4'" prop="wechat_micro_app_instance_id">
@@ -356,6 +331,7 @@
                     jlaccount : '',
                     distributorId_w: '',
                     distributorId_b: '',
+                    distributorId_f: '',
                     promotion1:[],
                     promotion2:[],
                     promotion3:[],
@@ -539,6 +515,23 @@
             videoListClear() {
                 this.form.video_ids = [];
             },
+            radioChange(value){
+                if (value == "1") {
+                    this.bid_strategys =[
+                        '抖超小29',
+                        // '5块9解锁',
+                        '抖超小10',
+                        '抖小额',
+                        '抖大额'
+                    ]
+                } else if (value == "7") {
+                    this.bid_strategys =[
+                        '超小',
+                        '低',
+                        'ROI'
+                    ]
+                }
+            },
             advertiserIdChange(row,title, index){
                 this.form.video_ids = [];
                 if (row && row.length==16) {
@@ -602,6 +595,7 @@
                 this.form.creater = this.user.name;
                 this.form.distributorId_w = this.user.distributor_w;
                 this.form.distributorId_b = this.user.distributor_b;
+                this.form.distributorId_f = this.user.distributor_f;
                 this.form.jlaccount = this.user.jlaccount;
                 this.dealAdvertiser_ids();
                 this.$axios.post(this.$httpUrl+'/jlaccount/autoCreatePromotion',this.form).then(res=>res.data).then(res=>{
