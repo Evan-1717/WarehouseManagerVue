@@ -23,7 +23,7 @@
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost1">查询</el-button>
 
-                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'|| user.no=='liangshenggang'|| user.no=='daiziling'|| user.no=='tangrui'|| user.no=='sujinpeng'|| user.no=='fanyuanbing'|| user.no=='zhengzhiyuan'|| user.no=='liangchaoqun'">创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.batch_permission =='y'">创建广告</el-button>
                 </div>
                 <el-table :data="autoPromotionTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
                     <el-table-column prop="promotion_id" label="账户ID" width="150" ></el-table-column>
@@ -60,7 +60,7 @@
                     </el-form>
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost2">查询</el-button>
-                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'|| user.no=='liangshenggang'|| user.no=='daiziling'|| user.no=='tangrui'|| user.no=='sujinpeng'|| user.no=='fanyuanbing'|| user.no=='zhengzhiyuan'|| user.no=='liangchaoqun'">创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.batch_permission =='y'">创建广告</el-button>
                 </div>
                 <el-table :data="jlprojectTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
                     <el-table-column prop="project_id" label="项目ID" width="200" ></el-table-column>
@@ -101,7 +101,7 @@
 
                     <el-button type="primary" style="margin-left: 5px;" @click="loadPost3">查询</el-button>
 
-                    <el-button type="primary" style="float: right" @click="add" v-if="user.roleId!=2 || user.no=='wujinyuan' || user.no=='pengdeshui' || user.no=='wangshengyu' || user.no=='xiaojiawang' || user.no=='dashan'|| user.no=='yuboya'|| user.no=='maishangye'|| user.no=='linghuayi'|| user.no=='lijiahao'|| user.no=='zhongleping'|| user.no=='yangcheng'|| user.no=='zhangfazhao'|| user.no=='wangbohan'|| user.no=='xiaoyan'|| user.no=='wuweijian'|| user.no=='zhengzijia'|| user.no=='linrongxin'|| user.no=='chenjiafu'|| user.no=='hejinlin'|| user.no=='liangshenggang'|| user.no=='daiziling'|| user.no=='tangrui'|| user.no=='sujinpeng'|| user.no=='fanyuanbing'|| user.no=='zhengzhiyuan'|| user.no=='liangchaoqun'">创建广告</el-button>
+                    <el-button type="primary" style="float: right" @click="add" v-if="user.batch_permission =='y'">创建广告</el-button>
                 </div>
                 <el-table :data="jlpromotionTableData" border style="overflow: auto; " max-height="calc(100% - 200px)">
                     <el-table-column prop="promotion_id" label="广告ID" width="200"></el-table-column>
@@ -140,6 +140,14 @@
                 </el-col>
 
                 <el-col :span="24">
+                    <el-form-item label="视频账户ID" prop="videoAdvertiser_id">
+                        <el-input style="width: 400px;" @change="videoListClear"
+                                   v-model="form.videoAdvertiser_id" >
+                        </el-input>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="24">
                     <el-form-item label="出价策略" prop="bid_strategy">
                         <el-select style="width: 400px;" @change="strategyChange"
                                    v-model="form.bid_strategy"  multiple>
@@ -153,41 +161,13 @@
                     </el-form-item>
                 </el-col>
 
-                <el-col :span="24">
-                    <el-form-item label="投放主体" prop="subject">
-                        <el-select style="width: 400px;"
-                                   v-model="form.subject"  multiple>
-                            <el-option
-                                    v-for="item in subjects"
-                                    :key="item"
-                                    :label="item"
-                                    :value="item">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-
-                <span v-for="(inde) in form.subject.length" :key="inde">
-
-                    <el-col :span="24" style="margin-left:50px ">
-                        <span>{{form.subject[inde-1]}}</span>
-                    <el-form-item label="视频账户ID" :prop="'subjectvideo' + inde" :rules="{required: true, trigger: 'change'}">
-                        <el-input style="width: 350px;"
-                                  v-model="form['subjectvideo' + inde]" >
+                <el-col :span="24" v-for="(index) in form.bid_strategy.length" :key="index" style="margin-left:50px ">
+                    <el-form-item :label="form.bid_strategy[index-1]" :prop="'advertiser_id' + index"
+                                  :rules="{required: true, trigger: 'change'}">
+                        <el-input style="width: 350px;" v-model="form['advertiser_id' + index]"  @change="(value)=>advertiserIdChange(value, form.bid_strategy[index-1], index)">
                         </el-input>
                     </el-form-item>
-                    </el-col>
-
-                    <el-col :span="24" v-for="(index) in form.bid_strategy.length" :key="index" style="margin-left:50px ">
-                        <el-form-item :label="form.bid_strategy[index-1]" :prop="'subject' + inde + 'advertiser_id' +  index"
-                                      :rules="{required: true, trigger: 'change'}">
-                            <el-input style="width: 350px;" v-model="form['subject' + inde + 'advertiser_id' +  index]"  @change="(value)=>advertiserIdChange(value, form.subject[inde-1], form.bid_strategy[index-1], index)">
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-
-                </span>
-
+                </el-col>
 
                 <el-col :span="24">
                     <el-form-item label="番茄短剧ID" prop="video_id">
@@ -197,13 +177,13 @@
 
                 <el-col :span="24">
                     <el-form-item label="创建项目个数" prop="project_number">
-                        <el-input-number v-model="form.project_number" step=1 min=1 max=10 style="width: 400px;"></el-input-number>
+                        <el-input-number v-model="form.project_number" step="1" min=1 max="10" style="width: 400px;"></el-input-number>
                     </el-form-item>
                 </el-col>
 
                 <el-col :span="24">
                     <el-form-item label="创建广告个数" prop="jlpromotion_number">
-                        <el-input-number v-model="form.jlpromotion_number" step=1 min=1 max=40 style="width: 400px;"
+                        <el-input-number v-model="form.jlpromotion_number" step="1" min=1 max="40" style="width: 400px;"
                                          @change="jlpromotionNumberChange"></el-input-number>
                     </el-form-item>
                 </el-col>
@@ -233,7 +213,7 @@
 
                 <el-col :span="24">
                     <el-form-item label="起始收费剧集" prop="start_chapter">
-                        <el-input-number v-model="form.start_chapter" step=1 min=5 max=30 style="width: 400px;"></el-input-number>
+                        <el-input-number v-model="form.start_chapter" step="1" min=5 max=30 style="width: 400px;"></el-input-number>
                     </el-form-item>
                 </el-col>
 
@@ -265,12 +245,38 @@
     export default {
         name: "JlPromotionManage",
         data() {
+            let checkAdvertiserId = (rule, value, callback) => {
+                if (value.length!=16) {
+                    return callback(new Error('账户ID错误！'));
+                }
+                callback();
+            };
+            let checkAdvertiserIds = (rule, value, callback) => {
+                if (value.length > 10) {
+                    return callback(new Error('账户ID信息个数不能超过10个！'));
+                }
+                for (const va of value) {
+                    if (va.length!=16) {
+                        return callback(new Error('账户ID错误！'));
+                    }
+                }
+                if (this.form.bid_strategy.length != this.form.advertiser_ids.length) {
+                    return callback(new Error('账户ID个数与出价策略个数必须一致！'));
+                }
+                callback();
+            };
             let numberCheck  = (rule, value, callback) => {
                 if (value <= 0) {
                     return callback(new Error('个数必须大于1！'));
                 }
                 callback();
             };
+            // let bidCheck  = (rule, value, callback) => {
+            //     if (this.form.bid_strategy.length != this.form.advertiser_ids.length) {
+            //         return callback(new Error('账户ID个数与出价策略个数必须一致！'));
+            //     }
+            //     callback();
+            // };
             return {
                 user : JSON.parse(sessionStorage.getItem('CurUser')),
                 question:'问题',
@@ -284,6 +290,7 @@
                 creater:{creater: JSON.parse(sessionStorage.getItem('CurUser')).name},
                 uploadDialogVisible:false,
                 fileList: {},
+                uploadUrl : this.$httpUrl+'/jlaccount/upload',
                 videoList: [],
                 autoPromotionTableData: [],
                 jlprojectTableData: [],
@@ -307,11 +314,8 @@
                     radio:'1',
                     cover:'n',
                     id:'',
-                    subject:[],
-                    advertiser_id1s:[],
-                    advertiser_id2s:[],
-                    advertiser_id3s:[],
-                    advertiser_id4s:[],
+                    videoAdvertiser_id:'',
+                    advertiser_ids:[],
                     bid_strategy:[],
                     video_id:'',
                     video_ids:[],
@@ -328,6 +332,16 @@
                     distributorId_w: '',
                     distributorId_b: '',
                     distributorId_f: '',
+                    promotion1:[],
+                    promotion2:[],
+                    promotion3:[],
+                    promotion4:[],
+                    promotion5:[],
+                    promotion6:[],
+                    promotion7:[],
+                    promotion8:[],
+                    promotion9:[],
+                    promotion10:[],
                     advertiser_id1:'',
                     advertiser_id2:'',
                     advertiser_id3:'',
@@ -338,33 +352,13 @@
                     bid_strategy3:'',
                     bid_strategy4:'',
                     bid_strategy5:'',
-                    subject1advertiser_id1:'',
-                    subject1advertiser_id2:'',
-                    subject1advertiser_id3:'',
-                    subject1advertiser_id4:'',
-                    subject2advertiser_id1:'',
-                    subject2advertiser_id2:'',
-                    subject2advertiser_id3:'',
-                    subject2advertiser_id4:'',
-                    subject3advertiser_id1:'',
-                    subject3advertiser_id2:'',
-                    subject3advertiser_id3:'',
-                    subject3advertiser_id4:'',
-                    subject4advertiser_id1:'',
-                    subject4advertiser_id2:'',
-                    subject4advertiser_id3:'',
-                    subject4advertiser_id4:'',
-                    subjectvideo1:'',
-                    subjectvideo2:'',
-                    subjectvideo3:'',
-                    subjectvideo4:'',
                 },
-                subjects:JSON.parse(sessionStorage.getItem('CurUser')).jlaccount,
                 flag : true,
                 videoListLoading: false,
                 allValue:'all',
                 bid_strategys:[
                     '抖超小29',
+                    // '5块9解锁',
                     '抖超小10',
                     '抖小额',
                     '抖大额'
@@ -391,6 +385,14 @@
                     role:[]
                 },
                 rules: {
+                    videoAdvertiser_id: [
+                        {required: true, trigger: 'blur'},
+                        {validator: checkAdvertiserId,trigger: 'blur'},
+                    ],
+                    advertiser_ids: [
+                        {required: true, trigger: 'blur'},
+                        {validator: checkAdvertiserIds,trigger: 'change'},
+                    ],
                     bid_strategy: [
                         {required: true, trigger: 'blur'},
                         // {validator: bidCheck,trigger: 'change'},
@@ -431,17 +433,15 @@
         },
         methods:{
             videoFocus() {
-                for (const index in this.form.subject) {
-                    if (this.validateVideoAdvertiser_id((Number(index)+1))) {return}
-                    for (const ind in this.form.bid_strategy) {
-                        const res = this.validateAdvertiser_id1('subject' + (Number(index)+1) + 'advertiser_id' + (Number(ind)+1), this.form.bid_strategy[ind]);
-                        if (res) {return}
-                    }
+                if (this.validateVideoAdvertiser_id()) {return}
+                for (const ind in this.form.bid_strategy) {
+                    const res = this.validateAdvertiser_id1('advertiser_id' + (Number(ind)+1), this.form.bid_strategy[ind]);
+                    if (res) {return}
                 }
                 this.videoAdvertiserIdChange();
             },
-            validateVideoAdvertiser_id(index) {
-                this.$refs.form.validateField("subjectvideo" + index, (valid) => {
+            validateVideoAdvertiser_id() {
+                this.$refs.form.validateField("videoAdvertiser_id", (valid) => {
                     if (valid) {
                         this.$refs.videoSelect.blur();
                         this.$message({
@@ -532,11 +532,11 @@
                     ]
                 }
             },
-            advertiserIdChange(row, subject, title, index){
+            advertiserIdChange(row,title, index){
                 this.form.video_ids = [];
                 if (row && row.length==16) {
-                    this.$axios.post(this.$httpUrl+'/jlaccount/getAdvertiserInfo',{advertiser_id: row, jlaccount : subject}).then(res=>res.data).then(res=>{
-                        if(!res.data.message){
+                    this.$axios.post(this.$httpUrl+'/jlaccount/getAdvertiserInfo',{advertiser_id: row, jlaccount : this.user.jlaccount}).then(res=>res.data).then(res=>{
+                        if(res.code==200){
                             if (res.data.name.indexOf(title) < 0) {
                                 this.$message({
                                     message: '账户' + row + "的名字为：" + res.data.name + "，请检查账户与出价策略是否匹配。",
@@ -546,7 +546,7 @@
                             }
                         }else{
                             this.$message({
-                                message: res.data.message,
+                                message: '操作失败！',
                                 type: 'error'
                             });
                         }
@@ -554,15 +554,9 @@
                 }
             },
             dealAdvertiser_ids () {
-
-                this.form.advertiser_id1s = [];
-                this.form.advertiser_id2s = [];
-                this.form.advertiser_id3s = [];
-                this.form.advertiser_id4s = [];
-                for (const index in this.form.subject) {
-                    for (const ind in this.form.bid_strategy) {
-                        this.form['advertiser_id' + (Number(index)+1) + 's'].push(this.form['subject' + (Number(index)+1) + 'advertiser_id' + (Number(ind)+1)]);
-                    }
+                this.form.advertiser_ids = [];
+                for (const ind in this.form.bid_strategy) {
+                    this.form.advertiser_ids.push(this.form['advertiser_id' + (Number(ind)+1)]);
                 }
             },
             getInputInfo() {
