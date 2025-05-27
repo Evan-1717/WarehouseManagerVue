@@ -124,6 +124,15 @@
                         <el-input v-model="form.password"></el-input>
                     </el-col>
                 </el-form-item>
+                <el-form-item label="投放载体" prop="distributor">
+                    <el-col :span="20">
+                        <el-select v-model="form.batch_permission" collapse-tags placeholder="请选择" style="width: 100%">
+                            <el-option
+                                    v-for="item in batch_permissions" :key="item.key" :label="item.key" :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-form-item>
                 <el-form-item label="分销商" prop="distributor">
                     <el-col :span="20">
                         <el-select v-model="form.distributor" multiple collapse-tags placeholder="请选择" style="width: 100%">
@@ -261,8 +270,14 @@
                     role:'',
                     location:'',
                     content:'',
-                    hiredate:''
+                    hiredate:'',
+                    batch_permission:'',
                 },
+                batch_permissions:[
+                    {key:'抖小', value :'d'},
+                    {key:'免费', value :'f'},
+                    {key:'付费', value :'p'},
+                ],
                 form1:{
                     name:'',
                     sex:'',
@@ -343,6 +358,7 @@
                     this.form.hiredate = row.hiredate
                     this.form.distributor = row.distributor
                     this.form.role = row.role
+                    this.form.batch_permission = row.batch_permission
                     if (!row.age) {
                         this.form.age =  '0';
                     } else {
@@ -399,6 +415,7 @@
             save(){
                 this.$refs.form.validate((valid) => {
                     if (valid) {
+                        console.log(this.form)
                         if(this.form.id){
                             this.doMod();
                         }else{

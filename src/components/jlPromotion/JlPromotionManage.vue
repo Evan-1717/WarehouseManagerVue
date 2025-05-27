@@ -1,21 +1,15 @@
 <template>
     <div style="height:100%">
         <div style="margin-bottom: 5px;">
-            <el-form ref="form1" :model="form1" label-width="75px">
-                <el-col :span="4">
-                    <el-form-item label="起止日期" prop="creater">
+            <el-form ref="form1" :model="form1" label-width="75px" >
+                    <el-form-item label="起止日期" prop="creater" style="margin-left: 50px;float: left">
                         <el-date-picker type="date" placeholder="起始时间" v-model="form1.date1" value-format="yyyy-MM-dd" style="width: 140px;"></el-date-picker>-
                         <el-date-picker type="date" placeholder="结束时间" v-model="form1.date2" value-format="yyyy-MM-dd" style="width: 140px;"></el-date-picker>
                     </el-form-item>
-                </el-col>
-
-                <el-col :span="3">
-                    <el-form-item v-show="user.roleId!=2" label="记录人" prop="creater">
+                    <el-form-item v-show="user.roleId!=2" label="记录人" prop="creater" style="margin-left: 50px;float: left">
                         <el-input v-model="form1.creater" clearable placeholder="请输入账户名或ID" style="width: 170px;" @keyup.enter.native="loadPost1">
                         </el-input>
                     </el-form-item>
-                </el-col>
-
             </el-form>
 
 
@@ -90,12 +84,13 @@
                 <el-col :span="24">
                     <el-form-item label="投放载体" prop="radio">
                         <el-radio v-model="form.radio" label="1" v-if="user.batch_permission =='d'" border size="mini">抖音小程序</el-radio>
-<!--                        <el-radio v-model="form.radio" label="4" border size="mini">微信小程序</el-radio>-->
+                        <el-radio v-model="form.radio" label="4" border size="mini">微信小程序</el-radio>
                         <el-radio v-model="form.radio" label="7" v-if="user.batch_permission =='f'" border size="mini">抖音小程序免费</el-radio>
+                        <el-radio v-model="form.radio" label="1" v-if="user.batch_permission =='p'" border size="mini">抖音小程序付费</el-radio>
                     </el-form-item>
                 </el-col>
 
-                <el-col :span="24" v-if="user.batch_permission =='d'">
+                <el-col :span="24" v-if="user.batch_permission !='f'">
                     <el-form-item label="投放主体" prop="subject">
                         <el-select style="width: 400px;" @change="subjectChange"
                                    v-model="form.subject"  multiple>
@@ -167,14 +162,15 @@
 
                 <el-col :span="24">
                     <el-form-item label="创建项目个数" prop="project_number">
-                        <el-input-number v-model="form.project_number" step=1 min=1 max=10 style="width: 400px;"></el-input-number>
+                        <el-input-number v-model="form.project_number" :min="1" :max="10" style="width: 400px;"></el-input-number>
                     </el-form-item>
                 </el-col>
 
                 <el-col :span="24">
                     <el-form-item label="创建广告个数" prop="jlpromotion_number">
-                        <el-input-number v-model="form.jlpromotion_number" step=1 min=1 max=40 style="width: 400px;"
+                        <el-input-number v-model="form.jlpromotion_number" :min="1" :max="40" style="width: 300px;"
                                          @change="jlpromotionNumberChange"></el-input-number>
+                        <el-checkbox v-model="form.distributeVideo" label="1" border size="mini"  style="margin-left: 4px">分配视频</el-checkbox>
                     </el-form-item>
                 </el-col>
 
@@ -203,7 +199,7 @@
 
                 <el-col :span="24">
                     <el-form-item label="起始收费剧集" prop="start_chapter">
-                        <el-input-number v-model="form.start_chapter" step=1 min=5 max=30 style="width: 400px;"></el-input-number>
+                        <el-input-number v-model="form.start_chapter" :min="5" :max="30" style="width: 400px;"></el-input-number>
                     </el-form-item>
                 </el-col>
 
@@ -281,6 +277,7 @@
                 form:{
                     radio:'1',
                     cover:'y',
+                    distributeVideo:'false',
                     id:'',
                     subject:[],
                     advertiser_id1s:[],
@@ -351,6 +348,11 @@
                     '抖超小99',
                     '抖小额',
                     '抖大额'
+                ],
+                bid_strategys_pay_value:[
+                    '番茄付费-抖超小29',
+                    '番茄付费-抖超小59',
+                    '番茄付费-抖超小10',
                 ],
                 free_bid_strategys_value1:[
                     '新风铭蓝-ROI',
@@ -536,26 +538,29 @@
             },
             videoListClear() {
                 this.form.video_ids = [];
-                this.subject1advertiser_id1='';
-                this.subject1advertiser_id2='';
-                this.subject1advertiser_id3='';
-                this.subject1advertiser_id4='';
-                this.subject2advertiser_id1='';
-                this.subject2advertiser_id2='';
-                this.subject2advertiser_id3='';
-                this.subject2advertiser_id4='';
-                this.subject3advertiser_id1='';
-                this.subject3advertiser_id2='';
-                this.subject3advertiser_id3='';
-                this.subject3advertiser_id4='';
-                this.subject4advertiser_id1='';
-                this.subject4advertiser_id2='';
-                this.subject4advertiser_id3='';
-                this.subject4advertiser_id4='';
+                this.form.subject1advertiser_id1='';
+                this.form.subject1advertiser_id2='';
+                this.form.subject1advertiser_id3='';
+                this.form.subject1advertiser_id4='';
+                this.form.subject2advertiser_id1='';
+                this.form.subject2advertiser_id2='';
+                this.form.subject2advertiser_id3='';
+                this.form.subject2advertiser_id4='';
+                this.form.subject3advertiser_id1='';
+                this.form.subject3advertiser_id2='';
+                this.form.subject3advertiser_id3='';
+                this.form.subject3advertiser_id4='';
+                this.form.subject4advertiser_id1='';
+                this.form.subject4advertiser_id2='';
+                this.form.subject4advertiser_id3='';
+                this.form.subject4advertiser_id4='';
             },
             radioChange(){
                 if (this.user.batch_permission =='d') {
                     this.bid_strategys = this.bid_strategys_value
+                    this.form.radio='1'
+                } else if (this.user.batch_permission =='p') {
+                    this.bid_strategys = this.bid_strategys_pay_value
                     this.form.radio='1'
                 } else if (this.user.batch_permission =='f') {
                     this.bid_strategys = this.free_bid_strategys_value1
@@ -637,26 +642,27 @@
                 this.form.id = '';
                 this.form.cover = 'y';
                 this.form.video_ids = [];
-                this.subject1advertiser_id1='';
-                this.subject1advertiser_id2='';
-                this.subject1advertiser_id3='';
-                this.subject1advertiser_id4='';
-                this.subject2advertiser_id1='';
-                this.subject2advertiser_id2='';
-                this.subject2advertiser_id3='';
-                this.subject2advertiser_id4='';
-                this.subject3advertiser_id1='';
-                this.subject3advertiser_id2='';
-                this.subject3advertiser_id3='';
-                this.subject3advertiser_id4='';
-                this.subject4advertiser_id1='';
-                this.subject4advertiser_id2='';
-                this.subject4advertiser_id3='';
-                this.subject4advertiser_id4='';
-                this.subjectvideo1='';
-                this.subjectvideo2='';
-                this.subjectvideo3='';
-                this.subjectvideo4='';
+                this.form.subject1advertiser_id1='';
+                this.form.subject1advertiser_id2='';
+                this.form.subject1advertiser_id3='';
+                this.form.subject1advertiser_id4='';
+                this.form.subject2advertiser_id1='';
+                this.form.subject2advertiser_id2='';
+                this.form.subject2advertiser_id3='';
+                this.form.subject2advertiser_id4='';
+                this.form.subject3advertiser_id1='';
+                this.form.subject3advertiser_id2='';
+                this.form.subject3advertiser_id3='';
+                this.form.subject3advertiser_id4='';
+                this.form.subject4advertiser_id1='';
+                this.form.subject4advertiser_id2='';
+                this.form.subject4advertiser_id3='';
+                this.form.subject4advertiser_id4='';
+                this.form.subjectvideo1='';
+                this.form.subjectvideo2='';
+                this.form.subjectvideo3='';
+                this.form.subjectvideo4='';
+                this.form.distributeVideo='false';
             },
             add(){
                 this.centerDialogVisible = true
@@ -668,6 +674,8 @@
                 this.form.distributorId_w = this.user.distributor_w;
                 this.form.distributorId_b = this.user.distributor_b;
                 this.form.distributorId_f = this.user.distributor_f;
+                this.form.distributorId_p = this.user.distributor_p;
+                this.form.batch_permission = this.user.batch_permission;
                 this.form.jlaccount = this.user.jlaccount;
                 this.dealAdvertiser_ids();
                 this.$axios.post(this.$httpUrl+'/jlaccount/autoCreatePromotion',this.form).then(res=>res.data).then(()=>{
