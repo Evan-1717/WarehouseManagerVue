@@ -126,7 +126,7 @@
                 </el-form-item>
                 <el-form-item label="投放载体" prop="distributor">
                     <el-col :span="20">
-                        <el-select v-model="form.batch_permission" collapse-tags placeholder="请选择" style="width: 100%">
+                        <el-select v-model="form.batch_permission" collapse-tags placeholder="请选择" multiple style="width: 100%">
                             <el-option
                                     v-for="item in batch_permissions" :key="item.key" :label="item.key" :value="item.value">
                             </el-option>
@@ -277,6 +277,7 @@
                     {key:'抖小', value :'d'},
                     {key:'免费', value :'f'},
                     {key:'付费', value :'p'},
+                    {key:'微小', value :'w'},
                 ],
                 form1:{
                     name:'',

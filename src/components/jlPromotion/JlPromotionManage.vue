@@ -83,14 +83,14 @@
             <el-form ref="form" :rules="rules" :model="form" label-width="140px">
                 <el-col :span="24">
                     <el-form-item label="投放载体" prop="radio">
-                        <el-radio v-model="form.radio" label="1" v-if="user.batch_permission =='d'" border size="mini">抖音小程序</el-radio>
-                        <el-radio v-model="form.radio" label="4" border size="mini">微信小程序</el-radio>
-                        <el-radio v-model="form.radio" label="7" v-if="user.batch_permission =='f'" border size="mini">抖音小程序免费</el-radio>
-                        <el-radio v-model="form.radio" label="1" v-if="user.batch_permission =='p'" border size="mini">抖音小程序付费</el-radio>
+                        <el-radio v-model="form.radio" label="1" v-if="user.batch_permission.indexOf('d') !== -1" border size="mini" @change="carrierChange('d')">抖小</el-radio>
+                        <el-radio v-model="form.radio" label="2" v-if="user.batch_permission.indexOf('f') !== -1" border size="mini" @change="carrierChange('f')">免费</el-radio>
+                        <el-radio v-model="form.radio" label="3" v-if="user.batch_permission.indexOf('p') !== -1" border size="mini" @change="carrierChange('p')">付费</el-radio>
+                        <el-radio v-model="form.radio" label="4" v-if="user.batch_permission.indexOf('w') !== -1" border size="mini" @change="carrierChange('w')">微小</el-radio>
                     </el-form-item>
                 </el-col>
 
-                <el-col :span="24" v-if="user.batch_permission !='f'">
+                <el-col :span="24" v-if="user.batch_permission.indexOf('f') == -1">
                     <el-form-item label="投放主体" prop="subject">
                         <el-select style="width: 400px;" @change="subjectChange"
                                    v-model="form.subject"  multiple>
@@ -104,7 +104,7 @@
                     </el-form-item>
                 </el-col>
 
-                <el-col :span="24" v-if="user.batch_permission =='f'">
+                <el-col :span="24" v-if="user.batch_permission.indexOf('f') !== -1">
                     <el-form-item label="投放主体" prop="subject">
                         <el-select style="width: 400px;" @change="subjectChange"
                                    v-model="form.subject">
@@ -204,16 +204,10 @@
                 </el-col>
 
                 <el-col :span="24">
-                    <el-form-item label="落地页链接" prop="external_url_material_list">
+                    <el-form-item label="落地页链接" prop="external_url_material_list" v-if="form.radio!='4'">
                         <el-input style="width: 400px;"
                                 v-model="form.external_url_material_list" >
                         </el-input>
-                    </el-form-item>
-                </el-col>
-
-                <el-col :span="24">
-                    <el-form-item label="微信小程序资产id" v-if="form.radio=='4'" prop="wechat_micro_app_instance_id">
-                        <el-input v-model="form.wechat_micro_app_instance_id" style="width: 400px;" ></el-input>
                     </el-form-item>
                 </el-col>
             </el-form>
@@ -245,6 +239,7 @@
                 aiAskDialogVisible:false,
                 aiAnswerDialogVisible:false,
                 aiAnswer:'',
+                getJlCountInfo:{},
                 statusEnumMap: {
                     '1': '等待创建',
                     '2': '创建中',
@@ -253,13 +248,15 @@
                 },
                 subjectEnumMap: {
                     'fqmfduanju06@163.com': '免费',
-                    'fqmfduanju05@163.com': '免费',
-                    'jtduanju9075@163.com': '抖小',
+                    'jtduanju90715@163.com': '免费',
                     'jtduanju9076@163.com': '抖小',
                     'jtduanju9077@163.com': '抖小',
+                    'jtduanju90711@163.com': '抖小',
+                    'jtduanju90714@163.com': '抖小',
+                    'jtduanju90713@163.com': '抖小',
+                    'jtduanju1903A@163.com': '付费',
                 },
                 creater:{creater: JSON.parse(sessionStorage.getItem('CurUser')).name},
-                uploadDialogVisible:false,
                 fileList: {},
                 videoList: [],
                 autoPromotionTableData: [],
@@ -275,7 +272,7 @@
                 },
 
                 form:{
-                    radio:'1',
+                    radio:'',
                     cover:'y',
                     distributeVideo:'false',
                     id:'',
@@ -338,7 +335,7 @@
                     promotion_name_info:[],
                     advertiser_id_info:[],
                 },
-                subjects:JSON.parse(sessionStorage.getItem('CurUser')).jlaccount,
+                subjects:[],
                 flag : true,
                 videoListLoading: false,
                 allValue:'all',
@@ -360,11 +357,19 @@
                     '厄尔网络-ROI',
                     '天野网络-ROI'
                 ],
+                free_bid_strategys_value3:[
+                    '谷雨黎网络-ROI',
+                    '雨柏溪网络-ROI'
+                ],
                 free_bid_strategys_value2:[
                     '超小',
                     '低',
                     'ROI'
                 ],
+                wechat_bid_strategys_value2:[
+                    '微信大额',
+                ],
+
                 formVideoValue: [],
                 tomatoForm: {
 
@@ -508,7 +513,14 @@
                 })
 
             },
+            carrierChange(row) {
+                this.subjects = this.getJlCountInfo[row];
+                this.form.subject = '';
+                this.form.bid_strategy = [];
+                this.videoListClear();
+            },
             subjectChange() {
+                this.form.bid_strategy = [];
                 let subject = [];
                 for (const index in this.subjects) {
                     if (this.form.subject.includes(this.subjects[index])) {
@@ -517,12 +529,20 @@
                 }
                 this.form.subject = subject;
 
-                if (this.form.radio=='7') {
+                if (this.form.radio=='1') {
+                    this.bid_strategys = this.bid_strategys_value
+                } else if (this.form.radio=='2') {
                     if (this.form.subject == 'fqmfduanju06@163.com') {
                         this.bid_strategys = this.free_bid_strategys_value1
+                    } else if (this.form.subject == 'jtduanju90715@163.com') {
+                        this.bid_strategys = this.free_bid_strategys_value3
                     } else {
                         this.bid_strategys = this.free_bid_strategys_value2
                     }
+                }  else if (this.form.radio=='3') {
+                    this.bid_strategys = this.bid_strategys_pay_value
+                }  else if (this.form.radio=='4') {
+                    this.bid_strategys = this.wechat_bid_strategys_value2
                 }
                 this.videoListClear();
             },
@@ -554,18 +574,10 @@
                 this.form.subject4advertiser_id2='';
                 this.form.subject4advertiser_id3='';
                 this.form.subject4advertiser_id4='';
-            },
-            radioChange(){
-                if (this.user.batch_permission =='d') {
-                    this.bid_strategys = this.bid_strategys_value
-                    this.form.radio='1'
-                } else if (this.user.batch_permission =='p') {
-                    this.bid_strategys = this.bid_strategys_pay_value
-                    this.form.radio='1'
-                } else if (this.user.batch_permission =='f') {
-                    this.bid_strategys = this.free_bid_strategys_value1
-                    this.form.radio='7'
-                }
+                this.form.subjectvideo1='';
+                this.form.subjectvideo2='';
+                this.form.subjectvideo3='';
+                this.form.subjectvideo4='';
             },
             advertiserIdChange(row, subject, title, index, inde){
                 this.form.video_ids = [];
@@ -604,7 +616,6 @@
                 }
             },
             dealAdvertiser_ids () {
-
                 this.form.advertiser_id1s = [];
                 this.form.advertiser_id2s = [];
                 this.form.advertiser_id3s = [];
@@ -671,10 +682,6 @@
                 // let loadingInstance = Loading.service({ fullscreen: true, text: '创建广告中，请稍等！',  });
                 this.form.time=this.currentDate();
                 this.form.creater = this.user.name;
-                this.form.distributorId_w = this.user.distributor_w;
-                this.form.distributorId_b = this.user.distributor_b;
-                this.form.distributorId_f = this.user.distributor_f;
-                this.form.distributorId_p = this.user.distributor_p;
                 this.form.batch_permission = this.user.batch_permission;
                 this.form.jlaccount = this.user.jlaccount;
                 this.dealAdvertiser_ids();
@@ -739,6 +746,25 @@
                     this.form1.creater=[this.user.name];
                 }
             },
+            getJlCountInfos(){
+                this.$axios.post(this.$httpUrl+'/jlaccount/getJlCountInfo',{}).then(res=>res.data).then(res=>{
+                    if(res.code==200){
+                        this.getJlCountInfo=res.data
+                        this.subjects = this.getJlCountInfo[this.user.batch_permission[0]];
+                        if (this.user.batch_permission[0] == 'd') {
+                            this.form.radio = '1'
+                        } else if (this.user.batch_permission[0] == 'f') {
+                            this.form.radio = '2'
+                        } else if (this.user.batch_permission[0] == 'p') {
+                            this.form.radio = '3'
+                        } else if (this.user.batch_permission[0] == 'w') {
+                            this.form.radio = '4'
+                        }
+                    }else{
+                        alert('获取数据失败')
+                    }
+                })
+            },
             loadPost1(){
                 this.$axios.post(this.$httpUrl+'/jlaccount/listPageAutoPromotion',{
                     pageSize:this.pageSize1,
@@ -752,7 +778,6 @@
                     if(res.code==200){
                         this.autoPromotionTableData=res.data
                         this.autoPromotionTableData.map(item => {
-                            console.log(item.project_num)
                             if (!item.project_info) {
                                 item.project_info=[];
                                 item.advertising_info=[];
@@ -777,7 +802,7 @@
             this.form1.creater = this.user.name
             this.loadPost1()
             this.getInputInfo();
-            this.radioChange();
+            this.getJlCountInfos();
             if (!this.timer) {
                 this.timer = setInterval(() => {
                     this.loadPost1();

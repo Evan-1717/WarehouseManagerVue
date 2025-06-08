@@ -63,6 +63,8 @@
             <el-button type="primary" style="margin-left: 5px;" @click="add">新增</el-button>
             <el-button type="primary" style="margin-left: 5px;" @click="aiAnalyze('first')" v-show="user.roleId!=2">AI分析</el-button>
             <el-button type="primary" style="margin-left: 5px;" @click="exportExcel" v-show="user.roleId!=2">导出</el-button>
+            <el-button type="primary" style="margin-left: 5px;" @click="exportExcelTopPlaylet"  v-show="user.roleId!=2">导出最热短剧</el-button>
+            <el-button type="primary" style="margin-left: 5px;" @click="uploadExcelPlaylet"  v-show="user.roleId!=2">导入短剧</el-button>
         </div>
         <el-table :data="tableData" :summary-method="getSummaries"  show-summary
                   :header-cell-style="cell_style" border style="overflow: auto; " max-height="calc(100% - 200px)">
@@ -244,6 +246,31 @@
                 <el-button type="primary" @click="aiAnalyze('other')">继续提问</el-button>
             </span>
         </el-dialog>
+        <el-dialog
+                title="上传文件"
+                :visible.sync="playletDialogVisible"
+                width = "25%"
+                style=" max-height: 100%;"
+                center :close-on-click-modal="false">
+            <el-upload
+                    ref="upload"
+                    class="upload-demo"
+                    drag
+                    accept=".xlsx"
+                    auto-upload="false"
+                    :file-list="fileList"
+                    :limit="1"
+                    :on-exceed="headleExceed"
+                    multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="playletDialogVisible = false">退出</el-button>
+                <el-button type="primary" @click="postFile()">提交</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -253,10 +280,14 @@
         data() {
             return {
                 user : JSON.parse(sessionStorage.getItem('CurUser')),
+                file:'',
+                fileName:'',
+                fileList:[],
                 question:'问题',
                 formAiAsk:{ask:''},
                 aiAskDialogVisible:false,
                 aiAnswerDialogVisible:false,
+                playletDialogVisible:false,
                 aiAnswer:'',
                 tableData: [],
                 pageSize:10,
@@ -722,7 +753,7 @@
                 let fanqiemianfeimarginRat = 0;
                 let fanqiemianfeiprofitRat = 0;
                 if (new Date(date).getTime() > new Date("2024-10-01").getTime()) {
-                    fanqiemianfeimarginRat = 0.85;
+                    fanqiemianfeimarginRat = 0.86;
                     fanqiemianfeiprofitRat = 0.89;
                 } else {
                     fanqiemianfeimarginRat = 0.89;
@@ -757,7 +788,7 @@
                     this.form.fanqieweixiaoprofit = 0;
                 }
                 if (this.form.fanqiemianfeiexpend) {
-                    this.form.fanqiemianfeiroi = this.fixed(this.form.fanqiemianfeirecharge/this.form.fanqiemianfeiexpend * 1.025);
+                    this.form.fanqiemianfeiroi = this.fixed(this.form.fanqiemianfeirecharge/this.form.fanqiemianfeiexpend);
                     this.form.fanqiemianfeimargin = this.fixed2(this.form.fanqiemianfeirecharge / 0.7 * fanqiemianfeimarginRat - this.form.fanqiemianfeiexpend / 1.025);
                     this.form.fanqiemianfeiprofit = this.fixed2(this.form.fanqiemianfeirecharge / 0.7 * fanqiemianfeiprofitRat - this.form.fanqiemianfeiexpend / 1.025);
                 } else {
@@ -865,6 +896,67 @@
                         });
                     })
                 })
+            },
+            exportExcelTopPlaylet(){
+                this.form.time=this.currentDate();
+                this.form.creater = this.user.name;
+                this.$confirm('确定导出？','提示',{
+                    confirmButtonText:'确定',
+                    cancelButtonText:'取消',
+                    type:'warning'
+                }).then(() => {
+                    this.$axios.request({
+                        url:this.$httpUrl.replace('8002', '8004') + '/playlet/exporttopPlaylet',
+                        method:'post',
+                        data: {
+                            date1:this.form1.date1
+                        },
+                        responseType:'blob'
+                    }).then(res=>{
+                        const url = window.URL.createObjectURL(new Blob([res.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download','最热短剧' + new Date().getTime() + '.xlsx');
+                        document.body.appendChild(link);
+                        link.click();
+                        window.URL.revokeObjectURL(URL);
+                    }).catch(() => {
+                        this.$message({
+                            message: '下载失败！',
+                            type: 'error'
+                        });
+                    })
+                })
+            },
+            headleExceed() {
+
+            },
+            postFile() {
+                let that = this;
+                if (that.file == '') {
+                    this.$message({
+                        message: '上传文件不能为空！',
+                        type: 'error'
+                    });
+                    return;
+                }
+                let file = this.$refs.upload.uploadFiles.pop().raw;
+                let formData = new FormData();
+                formData.append("file", file)
+                this.$axios.request({
+                    url:this.$httpUrl.replace('8002', '8004') + '/playlet/uploadPlaylet',
+                    method:'post', formData,
+                }).then(res=>{
+                    console.log(res)
+                }).catch(() => {
+                    this.$message({
+                        message: '下载失败！',
+                        type: 'error'
+                    });
+                })
+            },
+            uploadExcelPlaylet() {
+                this.playletDialogVisible = true;
             },
             currentDate(){
                 var d = new Date();
